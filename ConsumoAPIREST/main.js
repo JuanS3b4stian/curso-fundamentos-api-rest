@@ -1,3 +1,4 @@
+// Finish
 const API_KEY = 'live_0y2Ocv0c6XnnSZkts2SDpe6RtmjS7mb4Jrl7ujYMF0EJznLk9yz0Yvy6tUIA6jVB';
 
 // URLs de la API para obtener imágenes aleatorias y favoritos respectivamente
@@ -146,7 +147,7 @@ async function uploadMichiPhoto(){
 
   const res = await fetch(API_URL_UPLOAD, {
     method: 'POST',
-    headers: {
+    header: {
       'X-API-KEY': API_KEY,
     },
     // El body de la petición debe ser la instancia de FormData, no un objeto convertido con JSON.stringify
@@ -159,9 +160,9 @@ async function uploadMichiPhoto(){
     spanError.innerHTML = `Hubo un error al subir michi: ${res.status} ${data.message}`
   } else {
       console.log("Foto de michi cargada :)");
-      console.log({ data });
-      console.log(data.url);
-      saveFavouriteMichi(data.id) //para agregar el michi cargado a favoritos.
+        console.log({ data });
+        console.log(data.url);
+        saveFavouriteMichi(data.id) //para agregar el michi cargado a favoritos.
     }
 }
 
