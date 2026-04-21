@@ -1,9 +1,13 @@
+const API_KEY = 'live_0y2Ocv0c6XnnSZkts2SDpe6RtmjS7mb4Jrl7ujYMF0EJznLk9yz0Yvy6tUIA6jVB';
+
 // URLs de la API para obtener imágenes aleatorias y favoritos respectivamente
-const API_URL_RANDOM = 'https://api.thecatapi.com/v1/images/search?limit=2&api_key=live_0y2Ocv0c6XnnSZkts2SDpe6RtmjS7mb4Jrl7ujYMF0EJznLk9yz0Yvy6tUIA6jVB';
-const API_URL_FAVOURITES = 'https://api.thecatapi.com/v1/favourites?api_key=live_0y2Ocv0c6XnnSZkts2SDpe6RtmjS7mb4Jrl7ujYMF0EJznLk9yz0Yvy6tUIA6jVB';
+const API_URL_RANDOM = `https://api.thecatapi.com/v1/images/search?limit=2`
+const API_URL_FAVOURITES = `https://api.thecatapi.com/v1/favourites`;
+const API_URL_UPLOAD = `https://api.thecatapi.com/v1/images/upload`;
+
 
 // Según la Documentación de la API, para DELETE por ID, su URL tiene formato: /favourites/{favourite_id}
-const API_URL_FAVOURITES_DELETE = (id) => `https://api.thecatapi.com/v1/favourites/${id}?api_key=live_0y2Ocv0c6XnnSZkts2SDpe6RtmjS7mb4Jrl7ujYMF0EJznLk9yz0Yvy6tUIA6jVB`;
+const API_URL_FAVOURITES_DELETE = (id) => `https://api.thecatapi.com/v1/favourites/${id}`;
 
 // Referencia al elemento donde se mostrarán errores
 const spanError = document.getElementById('error')
@@ -18,7 +22,7 @@ async function loadRandomMichis() {
 
   // Validación de error en la respuesta
   if (res.status !== 200) {
-    spanError.innerHTML = "Hubo un error: " + res.status;
+    spanError.innerHTML = "Hubo un error: " + res.status + data.message;
   } else {
     // Obtener referencias de las imágenes en el HTML
     const img1 = document.getElementById('img1');
@@ -39,7 +43,12 @@ async function loadRandomMichis() {
 
 // Función para cargar gatos favoritos desde la API
 async function loadFavouriteMichis() {
-  const res = await fetch(API_URL_FAVOURITES); // Petición GET
+  const res = await fetch(API_URL_FAVOURITES, {
+    method: 'GET',
+    headers: {
+      'X-API-KEY': API_KEY,
+    },
+  }); // Petición GET
   const data = await res.json(); // Convertir respuesta a JSON
 
   console.log('Favoritos')
@@ -90,6 +99,7 @@ async function saveFavouriteMichi(id) {
     method: 'POST', // Método POST para enviar datos
     headers: {
       'Content-Type': 'application/json',
+      'X-API-KEY': API_KEY,
     },
     body: JSON.stringify({
       image_id: id // ID de la imagen a guardar
@@ -111,7 +121,10 @@ async function saveFavouriteMichi(id) {
 // Método para eliminar un Michi
 async function deleteFavouriteMichi(id){
   const res = await fetch(API_URL_FAVOURITES_DELETE(id), {
-  method: 'DELETE' // Método DELETE para eliminar datos
+  method: 'DELETE', // Método DELETE para eliminar datos
+  headers: {
+    'X-API-KEY': API_KEY,
+  }
 });
   const data = await res.json();
 
@@ -122,6 +135,34 @@ async function deleteFavouriteMichi(id){
     console.log(res);
     loadFavouriteMichis();
   }
+}
+
+// Método para subir un Michi
+async function uploadMichiPhoto(){
+  const form = document.getElementById('uploadingForm');
+  const formData = new FormData(form);
+
+  console.log(formData.get('file'));
+
+  const res = await fetch(API_URL_UPLOAD, {
+    method: 'POST',
+    headers: {
+      'X-API-KEY': API_KEY,
+    },
+    // El body de la petición debe ser la instancia de FormData, no un objeto convertido con JSON.stringify
+    body: formData,
+  });
+
+  const data = await res.json();
+
+  if (res.status !== 201) {
+    spanError.innerHTML = `Hubo un error al subir michi: ${res.status} ${data.message}`
+  } else {
+      console.log("Foto de michi cargada :)");
+      console.log({ data });
+      console.log(data.url);
+      saveFavouriteMichi(data.id) //para agregar el michi cargado a favoritos.
+    }
 }
 
 // Llamadas iniciales al cargar la página

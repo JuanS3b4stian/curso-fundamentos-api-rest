@@ -5,6 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gatitos aleatorios</title>
+  <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
   <h1>Michis App</h1>
@@ -36,6 +37,17 @@
     <button onclick="loadRandomMichis()">Recargar</button>
   </section>
   
+  <!-- Sección para el upload de imágenes -->
+  <section id="uploadingMichi">
+    <h2>Sube la Foto de tu Michi</h2>
+
+    <!-- Form para hacer el upload de la foto del Michi -->
+    <form id="uploadingForm">
+        <input id="file" type="file" name="file"/>
+        <button type="button" onclick="uploadMichiPhoto()">Subir Foto de Michi</button>
+    </form>
+  </section>
+
   <!-- Sección de favoritos -->
   <section id="favouriteMichis">
     <h2>Michis favoritos</h2>
@@ -46,6 +58,7 @@
     </article>
   </section>
 
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="./main.js"></script>
 </body>
 </html>
